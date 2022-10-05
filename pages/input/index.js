@@ -1,18 +1,34 @@
 import { useKegiatan } from "../../components/Fetch";
 import { useForm } from "react-hook-form";
 import pocketbaseEs from "pocketbase";
+import { useState, useEffect } from "react";
 
 const InputWasdit = () => {
   const client = new pocketbaseEs("http://127.0.0.1:8090/");
+  const [safeToReset, setSafeToReset] = useState(false);
 
   const { data: nama_kegiatan } = useKegiatan({
     refethOnWindowFocus: false,
   });
 
-  const { handleSubmit, register } = useForm();
+  const { handleSubmit, register, reset } = useForm();
 
-  const submitDataHandler = async (data) =>
-    client.records.create("realisasi_diseminasi", data);
+  const submitDataHandler = async (data) => {
+    try {
+      await client.records.create("realisasi_diseminasi", data);
+      setSafeToReset(true);
+    } catch (error) {
+      console.log(error.message);
+      console.log(error.response);
+    }
+  };
+
+  useEffect(() => {
+    if (safeToReset) {
+      reset();
+    }
+    setSafeToReset(false);
+  }, [safeToReset]);
 
   return (
     <main
@@ -26,6 +42,24 @@ const InputWasdit = () => {
           className="bg-white p-4 mx-auto"
           onSubmit={handleSubmit(submitDataHandler)}
         >
+          <div className="flex flex-col">
+            <label>Nama Kegiatan</label>
+            <input
+              type={"text"}
+              className="form-input rounded-md"
+              name="nama_kegiatan"
+              {...register("nama_kegiatan")}
+            />
+          </div>
+          <div className="flex flex-col mt-3">
+            <label>Realisasi</label>
+            <input
+              type={"number"}
+              className="form-input rounded-md"
+              name="realisaasi"
+              {...register("realisasi")}
+            />
+          </div>
           <div className="flex flex-col">
             <label>Induk Kegiatan</label>
             <select
@@ -44,24 +78,6 @@ const InputWasdit = () => {
                 );
               })}
             </select>
-          </div>
-          <div className="flex flex-col">
-            <label>Nama Kegiatan</label>
-            <input
-              type={"text"}
-              className="form-input rounded-md"
-              name="nama_kegiatan"
-              {...register("nama_kegiatan")}
-            />
-          </div>
-          <div className="flex flex-col mt-3">
-            <label>Realisasi</label>
-            <input
-              type={"number"}
-              className="form-input rounded-md"
-              name="realisaasi"
-              {...register("realisasi")}
-            />
           </div>
           <button type="submit">Submit</button>
         </form>
