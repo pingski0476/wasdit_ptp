@@ -20,6 +20,7 @@ export default function Dashboard() {
       <Head>
         <title>Dashboard Wasdit PTP</title>
       </Head>
+
       <main className="container w-full flex justify-center items-center">
         <table className="table-auto mt-4 border-collapse border border-slate-400 ">
           <thead className="text-md font-noto">
