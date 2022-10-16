@@ -1,6 +1,8 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useKegiatan } from "../../components/Fetch";
+import TabelAnggaran from "../../components/TabelAnggaran";
+import Admin from "../../layout/Admin";
 
 export default function Dashboard() {
   const { data: kegiatan, status: status_kegiatan } = useKegiatan({
@@ -15,63 +17,33 @@ export default function Dashboard() {
   if (status_kegiatan === "error") {
     return <div>{error_kegiatan}</div>;
   }
-  return (
-    <div>
-      <Head>
-        <title>Dashboard Wasdit PTP</title>
-      </Head>
 
-      <main className="container w-full flex justify-center items-center">
-        <table className="table-auto mt-4 border-collapse border border-slate-400 ">
-          <thead className="text-md font-noto">
-            <tr className="bg-slate-100">
-              <th className="p-2 border border-slate-400">
-                <div className="text-center">Kode MAK</div>
-              </th>
-              <th className="p-2 border border-slate-400">
-                <div className="text-center">Nama Kegiatan</div>
-              </th>
-              <th className="p-2 border border-slate-400">
-                <div>Pagu Anggaran</div>
-              </th>
-              <th className="p-2 border border-slate-400">
-                <div>Detail Kegiatan</div>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {kegiatan.map((dataKegiatan) => {
-              let nilai = new Intl.NumberFormat("id-ID", {
-                style: "currency",
-                currency: "IDR",
-              }).format(dataKegiatan.pagu_anggaran);
-              return (
-                <tr className="font-noto text-sm" key={dataKegiatan.id}>
-                  <td className="p-2 border border-slate-400">
-                    <div className="text-center">{dataKegiatan.kode_mak}</div>
-                  </td>
-                  <td className="p-2 border border-slate-400">
-                    <div className="text-left">{dataKegiatan.kegiatan}</div>
-                  </td>
-                  <td className="p-2 border border-slate-400">
-                    <div className="text-right">{nilai}</div>
-                  </td>
-                  <td className="p-2 border border-slate-400 flex justify-center">
-                    <Link
-                      href={`/dashboard/${dataKegiatan.id}`}
-                      key={dataKegiatan.id}
-                    >
-                      <button className="p-2 bg-indigo-500 rounded-md font-semibold text-white hover:bg-indigo-700 ">
-                        Details
-                      </button>
-                    </Link>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </main>
-    </div>
+  const anggaran = kegiatan.map((item) => {
+    return item.pagu_anggaran;
+  });
+
+  const totalAnggaran = anggaran.reduce(
+    (accumulator, value) => accumulator + value
+  );
+
+  let formatAnggaran = new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+  }).format(totalAnggaran);
+  return (
+    <Admin>
+      <div>
+        <Head>
+          <title>Dashboard Wasdit PTP</title>
+        </Head>
+
+        <main className="container w-full flex flex-col justify-center items-center overflow-x-auto">
+          <div className="w-full flex justify-start my-2 px-2 py-2">
+            <h1 className="font-noto font-bold text-xl">Dashboard</h1>
+          </div>
+          <TabelAnggaran kegiatan={kegiatan} total={formatAnggaran} />
+        </main>
+      </div>
+    </Admin>
   );
 }

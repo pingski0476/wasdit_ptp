@@ -5,8 +5,12 @@ const Admin = ({ children }) => {
   return (
     <div className="flex h-screen bg-gray-50">
       <Sidebar />
-      <Navbar />
-      <main>{children}</main>
+      <div className="flex flex-col flex-1 w-full">
+        <Navbar />
+        <main className="h-full overflow-y-auto">
+          <div className="container px-6 mx-auto grid">{children}</div>
+        </main>
+      </div>
     </div>
   );
 };

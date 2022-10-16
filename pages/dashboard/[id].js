@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useRealisasi } from "../../components/Fetch";
 import pocketbaseEs from "pocketbase";
 import { useEffect, useState } from "react";
+import Admin from "../../layout/Admin";
+import TabelRealisasi from "../../components/TabelRealisasi";
 
 const DetailsKegiatan = () => {
   const [id, setId] = useState("");
@@ -46,50 +48,30 @@ const DetailsKegiatan = () => {
     return r.kegiatan === id;
   });
 
+  const nilaiRealisasi = realisasiKegiatan.map((item) => {
+    return item.realisasi;
+  });
+
+  const totalRealisasi = nilaiRealisasi.reduce(
+    (accu, value) => accu + value,
+    0
+  );
+
+  let formatRealisasi = new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+  }).format(totalRealisasi);
   return (
-    <main>
-      <div className="w-full text-center my-4">
-        <h2 className="font-noto font-semibold text-2xl">
-          {`${nama_kegiatan.kegiatan} (${nama_kegiatan.kode_mak})`}
-        </h2>
-      </div>
-      <table className="table-auto w-full border-collapse border border-slate-400">
-        <thead>
-          <tr className="font-noto font-normal text-md bg-teal-100">
-            <th className="p-2 border border-slate-400">
-              <div className="text-center">No.</div>
-            </th>
-            <th className="p-2 border border-slate-400">
-              <div className="text-center">Nama Kegiatan</div>
-            </th>
-            <th className="p-2 border border-slate-400">
-              <div className="text-center">Realisasi</div>
-            </th>
-          </tr>
-        </thead>
-        <tbody className="font-noto font-normal text-sm">
-          {realisasiKegiatan.map((listRealisasi, index) => {
-            const nilaiRealisasi = new Intl.NumberFormat("id-ID", {
-              style: "currency",
-              currency: "IDR",
-            }).format(listRealisasi.realisasi);
-            return (
-              <tr key={listRealisasi.id}>
-                <td className="p-2 border border-slate-400">
-                  <div className="text-center">{index + 1}</div>
-                </td>
-                <td className="p-2 border border-slate-400">
-                  <div className="text-left">{listRealisasi.nama_kegiatan}</div>
-                </td>
-                <td className="p-2 border border-slate-400">
-                  <div className="text-right">{nilaiRealisasi}</div>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </main>
+    <Admin>
+      <main>
+        <div className="w-full text-center my-4">
+          <h2 className="font-noto font-semibold text-2xl">
+            {`${nama_kegiatan.kegiatan} (${nama_kegiatan.kode_mak})`}
+          </h2>
+        </div>
+        <TabelRealisasi realisasi={realisasiKegiatan} total={formatRealisasi} />
+      </main>
+    </Admin>
   );
 };
 

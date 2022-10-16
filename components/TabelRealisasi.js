@@ -1,7 +1,4 @@
-import Link from "next/link";
-import React from "react";
-
-export default function TabelAnggaran({ kegiatan, total }) {
+export default function TabelRealisasi({ realisasi, total }) {
   return (
     <>
       <div className="w-full mb-8 overflow-hidden rounded-lg shadow-xs ">
@@ -9,37 +6,27 @@ export default function TabelAnggaran({ kegiatan, total }) {
           <table className="w-full whitespace-no-wrap">
             <thead>
               <tr className=" font-noto font-semibold tracking-wide text-center text-gray-700 uppercase border-b bg-gray-50">
-                <td className="px-1 py-3">Kode MAK</td>
+                <td className="px-1 py-3">No.</td>
                 <td className="px-4 py-3">Nama Kegiatan</td>
-                <td className="px-4 py-3">Pagu Anggaran</td>
-                <td className="px-4 py-3">Detail Kegiatan</td>
+                <td className="px-4 py-3">Realisasi Anggaran</td>
               </tr>
             </thead>
             <tbody className="bg-white divide-y font-noto ">
-              {kegiatan.map((dataKegiatan) => {
-                let nilai = new Intl.NumberFormat("id-ID", {
+              {realisasi.map((detailRealisasi, index) => {
+                let nilaiRealisasi = new Intl.NumberFormat("id-ID", {
                   style: "currency",
                   currency: "IDR",
-                }).format(dataKegiatan.pagu_anggaran);
+                }).format(detailRealisasi.realisasi);
                 return (
-                  <tr className="text-gray-700" key={dataKegiatan.id}>
+                  <tr className="text-gray-700" key={detailRealisasi.id}>
                     <td className="px-1 py-3 text-center text-sm">
-                      {dataKegiatan.kode_mak}
+                      {index + 1}
                     </td>
                     <td className="px-4 py-3 text-left text-sm">
-                      {dataKegiatan.kegiatan}
+                      {detailRealisasi.nama_kegiatan}
                     </td>
-                    <td className="px-4 py-3 text-right text-sm">{nilai}</td>
-                    <td className="px-4 py-3 text-center">
-                      <Link
-                        href={`/dashboard/${dataKegiatan.id}`}
-                        key={dataKegiatan.id}
-                      >
-                        <button className="p-2 text-sm bg-green-500 rounded-md  text-white hover:bg-green-600">
-                          {" "}
-                          Details
-                        </button>
-                      </Link>
+                    <td className="px-4 py-3 text-right text-sm">
+                      {nilaiRealisasi}
                     </td>
                   </tr>
                 );
@@ -49,7 +36,7 @@ export default function TabelAnggaran({ kegiatan, total }) {
                 <td className="px-4 py-3 text-center text-sm font-bold">
                   Total
                 </td>
-                <td className="px-4 py-3 text-left text-sm font-bold">
+                <td className="px-4 py-3 text-right text-sm font-bold">
                   {total}
                 </td>
               </tr>
