@@ -49,7 +49,7 @@ export default function TabelAnggaran({ kegiatan, total }) {
                 <td className="px-4 py-3 text-center text-sm font-bold">
                   Total
                 </td>
-                <td className="px-4 py-3 text-left text-sm font-bold">
+                <td className="px-4 py-3 text-right text-sm font-bold">
                   {total}
                 </td>
               </tr>

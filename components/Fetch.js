@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import pocketbaseEs from "pocketbase";
 
-const client = new pocketbaseEs("http://127.0.0.1:8090/");
+export const client = new pocketbaseEs("http://127.0.0.1:8090/");
 
 const getWasdit = async () => {
   const response = await client.records.getFullList(

@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import { useQuery } from "@tanstack/react-query";
-import { useRealisasi } from "../../components/Fetch";
-import pocketbaseEs from "pocketbase";
+import { useRealisasi, client } from "../../components/Fetch";
 import { useEffect, useState } from "react";
 import Admin from "../../layout/Admin";
 import TabelRealisasi from "../../components/TabelRealisasi";
@@ -15,8 +14,6 @@ const DetailsKegiatan = () => {
       setId(router.query.id);
     }
   }, [router.isReady, router.query.id]);
-
-  const client = new pocketbaseEs("http://127.0.0.1:8090/");
 
   const getNamaKegiatan = async () => {
     const namaResponse = await client.records.getOne(

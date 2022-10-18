@@ -1,5 +1,6 @@
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
+import { client } from "./Fetch";
 
 function Navbar() {
   return (
@@ -72,6 +73,7 @@ function Navbar() {
                       <Menu.Item>
                         {({ active }) => (
                           <button
+                            onClick={() => client.authStore.clear()}
                             className={`${
                               active
                                 ? "bg-green-500 text-white"

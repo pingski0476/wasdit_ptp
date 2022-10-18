@@ -1,14 +1,36 @@
+import { useAtom } from "jotai";
 import Head from "next/head";
-import Link from "next/link";
-import { useKegiatan } from "../../components/Fetch";
+import { useKegiatan, client } from "../../components/Fetch";
 import TabelAnggaran from "../../components/TabelAnggaran";
 import Admin from "../../layout/Admin";
+import { userAtom } from "../../store/store";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Dashboard() {
-  const { data: kegiatan, status: status_kegiatan } = useKegiatan({
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-  });
+  // const { data: kegiatan, status: status_kegiatan } = useKegiatan({
+  //   refetchOnMount: false,
+  //   refetchOnWindowFocus: false,
+  // });
+
+  const [userData] = useAtom(userAtom);
+  console.log(userData);
+
+  const getWasdit = async () => {
+    const res = await client.records.getFullList(
+      `kegiatan_${userData.name}`,
+      400
+    );
+    return res;
+  };
+
+  const { data: kegiatan, status: status_kegiatan } = useQuery(
+    ["datakegiatan"],
+    getWasdit,
+    {
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+    }
+  );
 
   if (status_kegiatan === "loading") {
     return <div>Loading . . . .</div>;
