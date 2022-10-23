@@ -1,14 +1,19 @@
 import Link from "next/link";
 import React from "react";
 
-export default function TabelAnggaran({ kegiatan, total }) {
+export default function TabelAnggaran({
+  kegiatan,
+  realisasi,
+  total,
+  totalrealisasi,
+}) {
   return (
     <>
-      <div className="w-full mb-8 overflow-hidden rounded-lg shadow-xs ">
+      <div className=" bg-white w-full mb-8 overflow-hidden rounded-lg shadow-xs ">
         <div className="w-full overflow-x-auto">
           <table className="w-full whitespace-no-wrap">
             <thead>
-              <tr className=" font-noto font-semibold tracking-wide text-center text-gray-700 uppercase border-b bg-gray-50">
+              <tr className=" font-noto font-semibold tracking-wide text-center text-gray-700 uppercase border-b bg-white">
                 <td className="px-1 py-3">Kode MAK</td>
                 <td className="px-4 py-3">Nama Kegiatan</td>
                 <td className="px-4 py-3">Pagu Anggaran</td>
@@ -16,7 +21,7 @@ export default function TabelAnggaran({ kegiatan, total }) {
               </tr>
             </thead>
             <tbody className="bg-white divide-y font-noto ">
-              {kegiatan.map((dataKegiatan) => {
+              {kegiatan?.map((dataKegiatan) => {
                 let nilai = new Intl.NumberFormat("id-ID", {
                   style: "currency",
                   currency: "IDR",
@@ -32,10 +37,10 @@ export default function TabelAnggaran({ kegiatan, total }) {
                     <td className="px-4 py-3 text-right text-sm">{nilai}</td>
                     <td className="px-4 py-3 text-center">
                       <Link
-                        href={`/dashboard/${dataKegiatan.id}`}
+                        href={`/subkoordinator/${dataKegiatan.id}`}
                         key={dataKegiatan.id}
                       >
-                        <button className="p-2 text-sm bg-green-500 rounded-md  text-white hover:bg-green-600">
+                        <button className="p-2 text-sm bg-emerald-500 rounded-md  text-white hover:bg-emerald-600">
                           {" "}
                           Details
                         </button>
@@ -51,6 +56,9 @@ export default function TabelAnggaran({ kegiatan, total }) {
                 </td>
                 <td className="px-4 py-3 text-right text-sm font-bold">
                   {total}
+                </td>
+                <td className="px-4 py-3 text-center text-sm font-bold">
+                  {totalrealisasi}
                 </td>
               </tr>
             </tbody>

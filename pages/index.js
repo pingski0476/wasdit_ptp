@@ -3,18 +3,10 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { client } from "../components/Fetch";
 import { useRouter } from "next/router";
-import { useAtom } from "jotai";
-import { userAtom } from "../store/store";
 
 export default function Home() {
-  //inisialisasi state untuk user
-  const [userData, setUserData] = useAtom(userAtom);
-
   //inisialisasi router untuk force routing saat sudah login
   const router = useRouter();
-
-  //inisialisasi variabel untuk profile account
-  const account = client.authStore.model;
 
   //inisialisasi fungsi form
   const {
@@ -27,7 +19,6 @@ export default function Home() {
   const loginHandler = async (data) => {
     try {
       await client.users.authViaEmail(data.username, data.password);
-      setIsSafeToReset(true);
     } catch (error) {
       console.log(error);
     }
@@ -36,8 +27,7 @@ export default function Home() {
   //untuk membaca kondisi state user jika sudah login diarahkan ke /dashboard
   useEffect(() => {
     if (client.authStore.token) {
-      setUserData(account.profile);
-      router.push("/dashboard");
+      router.push("/subkoordinator");
     }
   }, [client.authStore.token, router]);
 

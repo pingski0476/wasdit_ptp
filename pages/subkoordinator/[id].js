@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useQuery } from "@tanstack/react-query";
-import { useRealisasi, client } from "../../components/Fetch";
+import { client, useUserProfile } from "../../components/Fetch";
 import { useEffect, useState } from "react";
 import Admin from "../../layout/Admin";
 import TabelRealisasi from "../../components/TabelRealisasi";
@@ -15,12 +15,25 @@ const DetailsKegiatan = () => {
     }
   }, [router.isReady, router.query.id]);
 
+  //get user global state for database profiling
+  const { data: userData } = useUserProfile({
+    refetchOnWindowFocus: false,
+  });
+
   const getNamaKegiatan = async () => {
     const namaResponse = await client.records.getOne(
-      "kegiatan_diseminasi",
+      `kegiatan_${userData.name}`,
       `${id}`
     );
     return namaResponse;
+  };
+
+  const getRealisasiKegiatan = async () => {
+    const resRealisasi = await client.records.getFullList(
+      `realisasi_${userData.name}`,
+      200
+    );
+    return resRealisasi;
   };
 
   const { data: nama_kegiatan, status: status_nama } = useQuery(
@@ -32,24 +45,28 @@ const DetailsKegiatan = () => {
     }
   );
 
-  const { data: realisasi, status: status_realisasi } = useRealisasi({
-    refetchOnWindowFocus: false,
-    enabled: !!id,
-  });
+  const { data: realisasi, status: status_realisasi } = useQuery(
+    ["realisasi"],
+    getRealisasiKegiatan,
+    {
+      refetchOnWindowFocus: false,
+      enabled: !!userData,
+    }
+  );
 
   if (status_nama === "loading") {
     return <div>Loading . . .</div>;
   }
 
-  const realisasiKegiatan = realisasi.filter((r) => {
+  const realisasiKegiatan = realisasi?.filter((r) => {
     return r.kegiatan === id;
   });
 
-  const nilaiRealisasi = realisasiKegiatan.map((item) => {
+  const nilaiRealisasi = realisasiKegiatan?.map((item) => {
     return item.realisasi;
   });
 
-  const totalRealisasi = nilaiRealisasi.reduce(
+  const totalRealisasi = nilaiRealisasi?.reduce(
     (accu, value) => accu + value,
     0
   );

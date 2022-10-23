@@ -12,7 +12,7 @@ export default function TabelRealisasi({ realisasi, total }) {
               </tr>
             </thead>
             <tbody className="bg-white divide-y font-noto ">
-              {realisasi.map((detailRealisasi, index) => {
+              {realisasi?.map((detailRealisasi, index) => {
                 let nilaiRealisasi = new Intl.NumberFormat("id-ID", {
                   style: "currency",
                   currency: "IDR",

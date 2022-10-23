@@ -1,8 +1,10 @@
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { client } from "./Fetch";
+import { useRouter } from "next/router";
 
 function Navbar() {
+  const router = useRouter();
   return (
     <>
       <header className="z-10 py-4 bg-white shadow-md sticky top-0">
@@ -55,7 +57,7 @@ function Navbar() {
                 className="focus:shadow-outline-purple relative inline-block text-left"
               >
                 <div>
-                  <Menu.Button className="font-noto inline-flex w-full justify-center rounded-md bg-green-500 px-4 py-2 text-sm font-medium text-white hover:bg-green-600 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+                  <Menu.Button className="font-noto inline-flex w-full justify-center rounded-md bg-emerald-500 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-600 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
                     Profile
                   </Menu.Button>
                 </div>
@@ -73,7 +75,10 @@ function Navbar() {
                       <Menu.Item>
                         {({ active }) => (
                           <button
-                            onClick={() => client.authStore.clear()}
+                            onClick={() => {
+                              client.authStore.clear();
+                              router.push("/");
+                            }}
                             className={`${
                               active
                                 ? "bg-green-500 text-white"
