@@ -1,16 +1,13 @@
-import { useKegiatan } from "../../components/Fetch";
 import { useForm } from "react-hook-form";
-import pocketbaseEs from "pocketbase";
 import { useState, useEffect } from "react";
 import Admin from "../../layout/Admin";
+import { client } from "../../components/Fetch";
+import { useQuery } from "@tanstack/react-query";
 
 const InputWasdit = () => {
-  const client = new pocketbaseEs("http://127.0.0.1:8090/");
   const [safeToReset, setSafeToReset] = useState(false);
 
-  const { data: nama_kegiatan } = useKegiatan({
-    refethOnWindowFocus: false,
-  });
+  const { data: nama_kegiatan } = useQuery;
 
   const { handleSubmit, register, reset } = useForm();
 

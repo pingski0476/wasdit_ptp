@@ -1,11 +1,13 @@
 import Link from "next/link";
 import React from "react";
+import { useUserProfile } from "./Fetch";
 
 export default function TabelAnggaran({
   kegiatan,
   realisasi,
   total,
   totalrealisasi,
+  user,
 }) {
   return (
     <>
@@ -37,7 +39,7 @@ export default function TabelAnggaran({
                     <td className="px-4 py-3 text-right text-sm">{nilai}</td>
                     <td className="px-4 py-3 text-center">
                       <Link
-                        href={`/subkoordinator/${dataKegiatan.id}`}
+                        href={`/${user?.jabatan}/${dataKegiatan.id}`}
                         key={dataKegiatan.id}
                       >
                         <button className="p-2 text-sm bg-emerald-500 rounded-md  text-white hover:bg-emerald-600">

@@ -1,25 +1,31 @@
 import Link from "next/link";
 import { useState } from "react";
-import { useUserProfile } from "./Fetch";
+import { dehydrate, useQuery, QueryClient } from "@tanstack/react-query";
+import { getUserState } from "./Fetch";
+
+export async function getServerSideProps() {
+  const queryclient = new QueryClient();
+  await queryclient.prefetchQuery(["users"], getUserState);
+  return {
+    props: {
+      dehydratedState: dehydrate(queryclient),
+    },
+  };
+}
 
 function Sidebar() {
   const [toggleDashboard, setToggleDashboard] = useState(false);
   const [toggleWasdit, setToggleWasdit] = useState(false);
   const [toggleKegiatan, setToggleKegiatan] = useState(false);
 
-  const { data: userData } = useUserProfile();
-  // const toggleDash = () => {
-  //   if(toggleDashboard){
-
-  //   }
-  // };
+  const { data: userData } = useQuery(["users"], getUserState);
 
   return (
     <aside className="h-screen overflow-y-auto sticky top-0 z-20 hidden w-64 md:block bg-emerald-500 flex-shrink-0 ">
       <div className="py-4 text-gray-500 font-noto">
         <a className="ml-6 text-lg font-bold text-white">Wasdit PTP</a>
         <ul className="mt-6">
-          <Link href={"/subkoordinator"}>
+          <Link href={`/${userData.jabatan}`}>
             <li className="relative  mx-2">
               <button
                 onClick={

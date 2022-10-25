@@ -3,28 +3,38 @@ import { client } from "../../components/Fetch";
 import TabelAnggaran from "../../components/TabelAnggaran";
 import Card from "../../components/Card";
 import Admin from "../../layout/Admin";
-import { useUserProfile } from "../../components/Fetch";
+import { getUserState } from "../../components/Fetch";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+
+export async function getServerSideProps() {
+  const queryclient = new QueryClient();
+  await queryclient.prefetchQuery(["users"], getUserState);
+  return {
+    props: {
+      dehydratedState: dehydrate(queryclient),
+    },
+  };
+}
 
 export default function Koordinator() {
   //router initialization
   const router = useRouter();
 
   //listen to userprofile data that refer to their database
-  const { data: userData } = useUserProfile({
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-  });
+  const { data: userData } = useQuery(["users"], getUserState);
 
   //listening user state if has login they can continue, if not they will back to login screen
   useEffect(() => {
     if (client.authStore.token) {
       if (userData?.jabatan == "koordinator") {
         router.push("/koordinator");
-      } else {
+      }
+      if (userData?.jabatan == "subkoordinator") {
         router.push("/subkoordinator");
+      } else {
+        router.push("/pumk");
       }
     } else {
       router.push("/");
@@ -33,13 +43,16 @@ export default function Koordinator() {
 
   //get data kegiatan
   const getWasdit = async () => {
-    const res = await client.records.getFullList(`kegiatan_diseminasi`, 400);
+    const res = await client.records.getFullList(
+      `kegiatan_${userData?.name}`,
+      400
+    );
     return res;
   };
 
   const getRealisasiKegiatan = async () => {
     const resRealisasi = await client.records.getFullList(
-      `realisasi_diseminasi`,
+      `realisasi_${userData?.name}`,
       200
     );
     return resRealisasi;
@@ -130,6 +143,7 @@ export default function Koordinator() {
             realisasi={realisasi}
             total={formatAnggaran}
             totalrealisasi={formatRealisasi}
+            user={userData}
           />
         </main>
       </div>

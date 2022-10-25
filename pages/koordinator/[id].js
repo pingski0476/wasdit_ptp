@@ -26,11 +26,13 @@ const DetailsKegiatan = () => {
   }, [router.isReady, router.query.id]);
 
   //get user global state for database profiling
-  const { data: userData } = useQuery(["users"], getUserState);
+  const { data: userData } = useUserProfile({
+    refetchOnWindowFocus: false,
+  });
 
   const getNamaKegiatan = async () => {
     const namaResponse = await client.records.getOne(
-      `kegiatan_${userData.kelompok}`,
+      `kegiatan_${userData.name}`,
       `${id}`
     );
     return namaResponse;
@@ -38,7 +40,7 @@ const DetailsKegiatan = () => {
 
   const getRealisasiKegiatan = async () => {
     const resRealisasi = await client.records.getFullList(
-      `realisasi_${userData.kelompok}`,
+      `realisasi_${userData.name}`,
       200
     );
     return resRealisasi;

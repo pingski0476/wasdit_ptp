@@ -3,10 +3,29 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { client } from "../components/Fetch";
 import { useRouter } from "next/router";
+import { getUserState } from "../components/Fetch";
+import { dehydrate, QueryClient, useQuery } from "@tanstack/react-query";
+import { useAtom } from "jotai";
+import { userAtom } from "../store/store";
+
+export async function getServerSideProps() {
+  const queryclient = new QueryClient();
+  await queryclient.prefetchQuery(["users"], getUserState);
+  return {
+    props: {
+      dehydratedState: dehydrate(queryclient),
+    },
+  };
+}
 
 export default function Home() {
   //inisialisasi router untuk force routing saat sudah login
   const router = useRouter();
+
+  // const [userData, setUserData] = useAtom(userAtom);
+
+  //listen to userprofile data that refer to their database
+  const { data: userData } = useQuery(["users"], getUserState);
 
   //inisialisasi fungsi form
   const {
@@ -27,9 +46,11 @@ export default function Home() {
   //untuk membaca kondisi state user jika sudah login diarahkan ke /dashboard
   useEffect(() => {
     if (client.authStore.token) {
-      router.push("/subkoordinator");
+      if (userData) {
+        router.push(`/${userData.jabatan}`);
+      }
     }
-  }, [client.authStore.token, router]);
+  }, [client.authStore.token, router, userData]);
 
   return (
     <>
