@@ -6,8 +6,6 @@ import { getUserState, client } from "../../components/Fetch";
 import { useQuery, dehydrate, QueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { useAtom } from "jotai";
-import { userAtom } from "../../store/store";
 
 export async function getServerSideProps() {
   const queryclient = new QueryClient();
@@ -29,12 +27,13 @@ export default function Dashboard() {
   //listening user state if has login they can continue, if not they will back to login screen
   useEffect(() => {
     if (client.authStore.token) {
-      if (userData?.jabatan == "subkoordinator") {
+      if (userData?.jabatan === "subkoordinator") {
         router.push("/subkoordinator");
       }
-      if (userData?.jabatan == "koordinator") {
+      if (userData?.jabatan === "koordinator") {
         router.push("/koordinator");
-      } else {
+      }
+      if (userData?.jabatan === "pumk") {
         router.push("/pumk");
       }
     } else {
@@ -42,7 +41,7 @@ export default function Dashboard() {
     }
   }, [client.authStore.token]);
 
-  //get data kegiatan
+  //inisialisasi fungsi fetching data kegiatan dari database
   const getWasdit = async () => {
     const res = await client.records.getFullList(
       `kegiatan_${userData?.kelompok}`,
@@ -51,7 +50,7 @@ export default function Dashboard() {
     return res;
   };
 
-  console.log(userData?.jabatan);
+  //inisialisasi fungsi fetching data realisasi dari database
   const getRealisasiKegiatan = async () => {
     const resRealisasi = await client.records.getFullList(
       `realisasi_${userData?.kelompok}`,
@@ -60,6 +59,7 @@ export default function Dashboard() {
     return resRealisasi;
   };
 
+  // fungsi fetching data kegiatan dan disimpan di cache
   const {
     data: dataKegiatan,
     status: status_kegiatan,
@@ -70,6 +70,7 @@ export default function Dashboard() {
     enabled: !!userData,
   });
 
+  // fungsi fetching data realisasi dan disimpan di cache
   const { data: dataRealisasi } = useQuery(
     ["realisasi"],
     getRealisasiKegiatan,
@@ -132,6 +133,7 @@ export default function Dashboard() {
     currency: "IDR",
   }).format(totalAnggaran);
 
+  //formating data into currency format
   let formatRealisasiRupiah = new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",

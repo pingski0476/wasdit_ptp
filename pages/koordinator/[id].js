@@ -26,9 +26,7 @@ const DetailsKegiatan = () => {
   }, [router.isReady, router.query.id]);
 
   //get user global state for database profiling
-  const { data: userData } = useUserProfile({
-    refetchOnWindowFocus: false,
-  });
+  const { data: userData } = useQuery(["users"], getUserState);
 
   const getNamaKegiatan = async () => {
     const namaResponse = await client.records.getOne(

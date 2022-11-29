@@ -16,9 +16,13 @@ export async function getServerSideProps() {
 }
 
 const DetailsKegiatan = () => {
+  //inisialisasi variabel untuk menyimpan id kegiatan
   const [id, setId] = useState("");
+
+  //inisialisasi fungsi untuk membaca query parameter
   const router = useRouter();
 
+  //fungsi membaca query parameter
   useEffect(() => {
     if (router.isReady) {
       setId(router.query.id);
@@ -28,6 +32,7 @@ const DetailsKegiatan = () => {
   //get user global state for database profiling
   const { data: userData } = useQuery(["users"], getUserState);
 
+  //fetching data berdasarkan id subkegiatan
   const getNamaKegiatan = async () => {
     const namaResponse = await client.records.getOne(
       `kegiatan_${userData.kelompok}`,
@@ -36,6 +41,7 @@ const DetailsKegiatan = () => {
     return namaResponse;
   };
 
+  //fetching realisasi berdasarkan id subkegiatan
   const getRealisasiKegiatan = async () => {
     const resRealisasi = await client.records.getFullList(
       `realisasi_${userData.kelompok}`,

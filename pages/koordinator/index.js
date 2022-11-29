@@ -4,7 +4,7 @@ import TabelAnggaran from "../../components/TabelAnggaran";
 import Card from "../../components/Card";
 import Admin from "../../layout/Admin";
 import { getUserState } from "../../components/Fetch";
-import { useQuery } from "@tanstack/react-query";
+import { dehydrate, useQuery, QueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 
@@ -28,18 +28,19 @@ export default function Koordinator() {
   //listening user state if has login they can continue, if not they will back to login screen
   useEffect(() => {
     if (client.authStore.token) {
-      if (userData?.jabatan == "koordinator") {
+      if (userData?.jabatan === "koordinator") {
         router.push("/koordinator");
       }
-      if (userData?.jabatan == "subkoordinator") {
+      if (userData?.jabatan === "subkoordinator") {
         router.push("/subkoordinator");
-      } else {
+      }
+      if (userData?.jabatan === "pumk") {
         router.push("/pumk");
       }
     } else {
       router.push("/");
     }
-  }, [client.authStore.token]);
+  }, [userData]);
 
   //get data kegiatan
   const getWasdit = async () => {

@@ -4,6 +4,12 @@ import { client, getUserState } from "../../components/Fetch";
 import { useEffect, useState } from "react";
 import Admin from "../../layout/Admin";
 import TabelRealisasi from "../../components/TabelRealisasi";
+import Head from "next/head";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
+import { useAtom } from "jotai";
+import { addModalRealAtom } from "../../store/store";
+import AddModalReal from "../../components/AddModalReal";
 
 export async function getServerSideProps() {
   const queryclient = new QueryClient();
@@ -27,6 +33,9 @@ const DetailsKegiatan = () => {
 
   //get user global state for database profiling
   const { data: userData } = useQuery(["users"], getUserState);
+
+  //setting add modal state
+  const [, setIsOpenAddReal] = useAtom(addModalRealAtom);
 
   const getNamaKegiatan = async () => {
     const namaResponse = await client.records.getOne(
@@ -79,19 +88,53 @@ const DetailsKegiatan = () => {
     0
   );
 
+  const sisaAnggaran = nama_kegiatan.pagu_anggaran - totalRealisasi;
+
   let formatRealisasi = new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",
   }).format(totalRealisasi);
+
+  let formatSisa = new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+  }).format(sisaAnggaran);
   return (
     <Admin>
+      <Head>
+        <title>Realisasi {nama_kegiatan.kegiatan}</title>
+      </Head>
       <main>
         <div className="w-full text-center my-4">
           <h2 className="font-noto font-semibold text-2xl">
             {`${nama_kegiatan.kegiatan} (${nama_kegiatan.kode_mak})`}
           </h2>
+          <AddModalReal
+            user={userData}
+            kegiatan={nama_kegiatan}
+            sisaAnggaran={formatSisa}
+          />
         </div>
-        <TabelRealisasi realisasi={realisasiKegiatan} total={formatRealisasi} />
+        {userData?.jabatan === "pumk" ? (
+          <div className="w-full flex justify-start my-2 px-2 py-2">
+            <button
+              onClick={() => setIsOpenAddReal(true)}
+              className="px-2 py-2 text-sm bg-blue-500 text-white font-noto rounded-md hover:bg-blue-600"
+            >
+              <FontAwesomeIcon icon={faCirclePlus} className="mr-2" />
+              Input Realisasi
+            </button>
+          </div>
+        ) : (
+          <></>
+        )}
+        <TabelRealisasi
+          realisasi={realisasiKegiatan}
+          user={userData}
+          kegiatan={nama_kegiatan}
+          total={formatRealisasi}
+          sisa={formatSisa}
+        />
       </main>
     </Admin>
   );

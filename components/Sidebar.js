@@ -25,7 +25,7 @@ function Sidebar() {
       <div className="py-4 text-gray-500 font-noto">
         <a className="ml-6 text-lg font-bold text-white">Wasdit PTP</a>
         <ul className="mt-6">
-          <Link href={`/${userData.jabatan}`}>
+          <Link href={`/${userData?.jabatan}`}>
             <li className="relative  mx-2">
               <button
                 onClick={
@@ -57,56 +57,6 @@ function Sidebar() {
             </li>
           </Link>
         </ul>
-        {userData?.jabatan === "pumk" ? (
-          <ul>
-            <li className="relative mx-2 ">
-              <button
-                // onClick={toggleDashboard ? () => toggle() : () => setToggle(true)}
-                className="inline-flex px-6 py-3 rounded-md items-center w-full text-sm font-semibold transition-colors duration-150 text-white hover:text-gray-800 hover:bg-white"
-                aria-controls="dropdown"
-                data-collapse-toggle="dropdown"
-              >
-                <svg
-                  className="w-5 h-5"
-                  aria-hidden="true"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
-                </svg>
-                <span className="ml-4">Input Kegiatan</span>
-              </button>
-            </li>
-            <li className="relative mx-2 ">
-              <button
-                // onClick={toggle ? () => setToggle(false) : () => setToggle(true)}
-                className="inline-flex px-6 py-3 rounded-md items-center w-full text-sm font-semibold transition-colors duration-150 text-white hover:text-gray-800 hover:bg-white"
-                aria-controls="dropdown"
-                data-collapse-toggle="dropdown"
-              >
-                <svg
-                  className="w-5 h-5"
-                  aria-hidden="true"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
-                </svg>
-                <span className="ml-4">Input Wasdit</span>
-              </button>
-            </li>
-          </ul>
-        ) : (
-          <></>
-        )}
       </div>
     </aside>
   );

@@ -1,12 +1,16 @@
 import Head from "next/head";
-import { client } from "../../components/Fetch";
+import { client, getUserState } from "../../components/Fetch";
 import TabelAnggaran from "../../components/TabelAnggaran";
 import Card from "../../components/Card";
 import Admin from "../../layout/Admin";
-import { getUserState } from "../../components/Fetch";
 import { dehydrate, QueryClient, useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
+import { useAtom } from "jotai";
+import AddModal from "../../components/AddModal";
+import { modalAddAtom } from "../../store/store";
 
 export async function getServerSideProps() {
   const queryclient = new QueryClient();
@@ -24,6 +28,9 @@ export default function Pumk() {
 
   //listen to userprofile data that refer to their database
   const { data: userData } = useQuery(["users"], getUserState);
+
+  //defining atom for modal state to add kegiatan
+  const [, setIsOpenAdd] = useAtom(modalAddAtom);
 
   //listening user state if has login they can continue, if not they will back to login screen
   useEffect(() => {
@@ -204,6 +211,8 @@ export default function Pumk() {
           <div className="w-full flex justify-start my-2 px-2 py-2">
             <h1 className="font-noto font-bold text-xl">Dashboard</h1>
           </div>
+
+          <AddModal userData={userData} />
           <div className="w-full flex gap-5 justify-start my-2 px-2 py-2">
             <Card title={"Realisasi Bidang (%)"} total={formatRealisasi} />
             <Card
@@ -224,6 +233,20 @@ export default function Pumk() {
               total={formatRealisasiRupiah2}
             />
           </div>
+          {userData?.jabatan === "pumk" ? (
+            <div className="w-full flex justify-start my-2 px-2 py-2">
+              <button
+                onClick={() => setIsOpenAdd(true)}
+                className="px-2 py-2 bg-blue-500 text-white font-noto rounded-md hover:bg-blue-600"
+              >
+                <FontAwesomeIcon icon={faCirclePlus} className="mr-1" />
+                Tambah Kegiatan
+              </button>
+            </div>
+          ) : (
+            <></>
+          )}
+
           <TabelAnggaran
             kegiatan={kegiatan}
             realisasi={realisasi}

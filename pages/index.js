@@ -1,12 +1,12 @@
 import Head from "next/head";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { client } from "../components/Fetch";
+import { client, getUserState } from "../components/Fetch";
 import { useRouter } from "next/router";
-import { getUserState } from "../components/Fetch";
 import { dehydrate, QueryClient, useQuery } from "@tanstack/react-query";
+import { errorAtom } from "../store/store";
 import { useAtom } from "jotai";
-import { userAtom } from "../store/store";
+import Alert from "../components/Alert";
 
 export async function getServerSideProps() {
   const queryclient = new QueryClient();
@@ -22,7 +22,11 @@ export default function Home() {
   //inisialisasi router untuk force routing saat sudah login
   const router = useRouter();
 
-  // const [userData, setUserData] = useAtom(userAtom);
+  //show error on login failure
+  const [showError, setShowError] = useAtom(errorAtom);
+
+  //const set error message props
+  const [error, setError] = useState("");
 
   //listen to userprofile data that refer to their database
   const { data: userData } = useQuery(["users"], getUserState);
@@ -39,7 +43,8 @@ export default function Home() {
     try {
       await client.users.authViaEmail(data.username, data.password);
     } catch (error) {
-      console.log(error);
+      setShowError(true);
+      setError(error.message);
     }
   };
 
@@ -64,6 +69,7 @@ export default function Home() {
       </Head>
       <main className="w-full bg-green-100 h-screen flex justify-center items-center ">
         <div className="w-96 bg-white  h-fit shadow-md rounded-lg px-8 py-6">
+          {showError ? <Alert message={error} /> : <></>}
           <div className="w-full">
             <h1 className="font-bold font-noto text-2xl text-center mb-4">
               Login

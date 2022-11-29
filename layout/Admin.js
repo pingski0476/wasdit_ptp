@@ -7,6 +7,7 @@ const Admin = ({ children }) => {
       <Sidebar />
       <div className="flex flex-col flex-1 w-full">
         <Navbar />
+        
         <main className="h-full overflow-y-auto">
           <div className="container px-6 mx-auto grid">{children}</div>
         </main>
