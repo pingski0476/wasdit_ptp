@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useAtom } from "jotai";
-import { addModalRealAtom } from "../store/store";
+import { addModalRealAtom, successModelAtom } from "../store/store";
 import { useForm } from "react-hook-form";
 import { client } from "./Fetch";
 
@@ -12,8 +12,12 @@ export default function AddModalReal({ user, kegiatan, sisaAnggaran }) {
   //setting modal state
   const [isOpenAddReal, setIsOpenAddReal] = useAtom(addModalRealAtom);
 
+  //initialize success modal
+  const [, setIsOpenSuccess] = useAtom(successModelAtom);
+
   const kelompok = user?.kelompok;
 
+  //refresh page function when data is sent
   const refreshPage = () => {
     window.location.reload();
   };
@@ -36,8 +40,6 @@ export default function AddModalReal({ user, kegiatan, sisaAnggaran }) {
     }
   };
 
-  // const submitDataHandler = (data) => console.log(data);
-
   useEffect(() => {
     if (safeToReset) {
       reset();
@@ -48,7 +50,8 @@ export default function AddModalReal({ user, kegiatan, sisaAnggaran }) {
   useEffect(() => {
     if (isSubmitSuccessful) {
       setIsOpenAddReal(false);
-      alert("Sukses Submit Data");
+      setIsOpenSuccess(true);
+      setTimeout(() => setIsOpenSuccess(false), 1500);
       refreshPage();
     }
   }, [isSubmitSuccessful]);
@@ -88,7 +91,7 @@ export default function AddModalReal({ user, kegiatan, sisaAnggaran }) {
                   as="h3"
                   className="text-xl font-bold text-center leading-6 text-gray-900"
                 >
-                  <h1>Input Kegiatan</h1>
+                  <h1>Tambah Realisasi</h1>
                 </Dialog.Title>
                 <form
                   method="post"

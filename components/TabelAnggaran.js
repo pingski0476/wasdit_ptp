@@ -11,6 +11,7 @@ import {
 } from "../store/store";
 import EditModal from "./EditModal";
 import DeleteModal from "./DeleteModal";
+import SuccessModal from "./SuccessModal";
 
 export default function TabelAnggaran({
   kegiatan,
@@ -33,6 +34,7 @@ export default function TabelAnggaran({
     <>
       <EditModal userData={user} />
       <DeleteModal userData={user} />
+      <SuccessModal />
       <div className=" bg-white w-full mb-8 overflow-hidden rounded-lg shadow-xs ">
         <div className="w-full overflow-x-auto">
           <table className="w-full whitespace-no-wrap">

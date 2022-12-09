@@ -4,6 +4,8 @@ import { client, getUserState } from "../../components/Fetch";
 import { useEffect, useState } from "react";
 import Admin from "../../layout/Admin";
 import TabelRealisasi from "../../components/TabelRealisasi";
+import LoadingScreen from "../../components/LoadingScreen";
+import Head from "next/head";
 
 export async function getServerSideProps() {
   const queryclient = new QueryClient();
@@ -63,7 +65,7 @@ const DetailsKegiatan = () => {
   );
 
   if (status_nama === "loading") {
-    return <div>Loading . . .</div>;
+    return <LoadingScreen />;
   }
 
   const realisasiKegiatan = realisasi?.filter((r) => {
@@ -85,6 +87,14 @@ const DetailsKegiatan = () => {
   }).format(totalRealisasi);
   return (
     <Admin>
+      <Head>
+        <title>Realisasi {nama_kegiatan.kegiatan}</title>
+        <link
+          rel="icon"
+          type="image/x-icon"
+          href='../../public/favicon.ico'
+        />
+      </Head>
       <main>
         <div className="w-full text-center my-4">
           <h2 className="font-noto font-semibold text-2xl">

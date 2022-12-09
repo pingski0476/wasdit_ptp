@@ -11,6 +11,7 @@ import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { useAtom } from "jotai";
 import AddModal from "../../components/AddModal";
 import { modalAddAtom } from "../../store/store";
+import LoadingScreen from "../../components/LoadingScreen";
 
 export async function getServerSideProps() {
   const queryclient = new QueryClient();
@@ -83,7 +84,7 @@ export default function Pumk() {
   });
 
   if (status_kegiatan === "loading") {
-    return <div>Loading . . . .</div>;
+    return <LoadingScreen />;
   }
 
   if (status_kegiatan === "error") {
@@ -200,11 +201,22 @@ export default function Pumk() {
     currency: "IDR",
   }).format(totalRealisasiAnggaran);
 
+  let formatSisaAnggaran = new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+  }).format(totalRealisasiAnggaran - totalAnggaran);
+
+  const kelompok = userData?.kelompok.toUpperCase();
   return (
     <Admin>
       <div>
         <Head>
           <title>Dashboard Wasdit PTP</title>
+          <link
+            rel="icon"
+            type="image/x-icon"
+            href="../../public/favicon.ico"
+          />
         </Head>
 
         <main className="container w-full flex flex-col justify-center items-center overflow-x-auto">
@@ -213,24 +225,35 @@ export default function Pumk() {
           </div>
 
           <AddModal userData={userData} />
+
+          <h1 className="font-noto font-bold text-xl mb-4">
+            Kelompok {kelompok}
+          </h1>
           <div className="w-full flex gap-5 justify-start my-2 px-2 py-2">
-            <Card title={"Realisasi Bidang (%)"} total={formatRealisasi} />
+            <Card title={"Pagu Anggaran"} totalRupiah={formatAnggaran} />
             <Card
-              title={"Realisasi Bidang (Rp.)"}
-              total={formatRealisasiRupiah}
+              title={"Realisasi"}
+              total={formatRealisasi}
+              totalRupiah={formatRealisasiRupiah}
+            />
+            <Card title={"Sisa "} totalRupiah={formatSisaAnggaran} />
+          </div>
+          <div className="w-full flex gap-5 justify-start my-2 px-2 py-2">
+            <Card
+              title={"Realisasi Bidang"}
+              total={formatRealisasi}
+              totalRupiah={formatRealisasiRupiah}
             />
             <Card
-              title={"Realisasi Tata Kelola TI (%)"}
+              title={"Realisasi Tata Kelola TI"}
               total={formatRealisasi1}
+              totalRupiah={formatRealisasiRupiah1}
             />
+
             <Card
-              title={"Realisasi Tata Kelola TI (Rp.)"}
-              total={formatRealisasiRupiah1}
-            />
-            <Card title={"Realisasi Diseminasi (%)"} total={formatRealisasi2} />
-            <Card
-              title={"Realisasi Diseminasi (Rp.)"}
-              total={formatRealisasiRupiah2}
+              title={"Realisasi Diseminasi "}
+              total={formatRealisasi2}
+              totalRupiah={formatRealisasiRupiah2}
             />
           </div>
           {userData?.jabatan === "pumk" ? (

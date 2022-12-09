@@ -10,6 +10,7 @@ import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { useAtom } from "jotai";
 import { addModalRealAtom } from "../../store/store";
 import AddModalReal from "../../components/AddModalReal";
+import LoadingScreen from "../../components/LoadingScreen";
 
 export async function getServerSideProps() {
   const queryclient = new QueryClient();
@@ -39,7 +40,7 @@ const DetailsKegiatan = () => {
 
   const getNamaKegiatan = async () => {
     const namaResponse = await client.records.getOne(
-      `kegiatan_${userData.kelompok}`,
+      `kegiatan_${userData?.kelompok}`,
       `${id}`
     );
     return namaResponse;
@@ -47,7 +48,7 @@ const DetailsKegiatan = () => {
 
   const getRealisasiKegiatan = async () => {
     const resRealisasi = await client.records.getFullList(
-      `realisasi_${userData.kelompok}`,
+      `realisasi_${userData?.kelompok}`,
       200
     );
     return resRealisasi;
@@ -72,7 +73,7 @@ const DetailsKegiatan = () => {
   );
 
   if (status_nama === "loading") {
-    return <div>Loading . . .</div>;
+    return <LoadingScreen />;
   }
 
   const realisasiKegiatan = realisasi?.filter((r) => {
@@ -88,7 +89,7 @@ const DetailsKegiatan = () => {
     0
   );
 
-  const sisaAnggaran = nama_kegiatan.pagu_anggaran - totalRealisasi;
+  const sisaAnggaran = nama_kegiatan?.pagu_anggaran - totalRealisasi;
 
   let formatRealisasi = new Intl.NumberFormat("id-ID", {
     style: "currency",
@@ -103,6 +104,11 @@ const DetailsKegiatan = () => {
     <Admin>
       <Head>
         <title>Realisasi {nama_kegiatan.kegiatan}</title>
+        <link
+          rel="icon"
+          type="image/x-icon"
+          href='../../public/favicon.ico'
+        />
       </Head>
       <main>
         <div className="w-full text-center my-4">

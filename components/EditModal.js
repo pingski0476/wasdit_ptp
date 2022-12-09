@@ -1,7 +1,11 @@
 import { Fragment, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useAtom } from "jotai";
-import { editIdModalAtom, modalEditAtom } from "../store/store";
+import {
+  editIdModalAtom,
+  modalEditAtom,
+  successModelAtom,
+} from "../store/store";
 import { useForm } from "react-hook-form";
 import { client } from "./Fetch";
 
@@ -9,6 +13,9 @@ export default function EditModal({ userData }) {
   const [isOpenEdit, setIsOpenEdit] = useAtom(modalEditAtom);
 
   const [editId] = useAtom(editIdModalAtom);
+
+  //initialize success modal
+  const [, setIsOpenSuccess] = useAtom(successModelAtom);
 
   const {
     register,
@@ -19,6 +26,11 @@ export default function EditModal({ userData }) {
 
   let kelompok = userData?.kelompok;
 
+  //function to reload the page when the data is sent
+  const refreshPage = () => {
+    window.location.reload();
+  };
+
   const getSatuKegiatan = async () => {
     try {
       const response = await client.records.getOne(
@@ -27,7 +39,7 @@ export default function EditModal({ userData }) {
       );
       reset(response);
     } catch (error) {
-      alert(error.message);
+      console.log(error.message);
     }
   };
 
@@ -42,6 +54,15 @@ export default function EditModal({ userData }) {
   useEffect(() => {
     getSatuKegiatan();
   }, [editId]);
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      setIsOpenEdit(false);
+      setIsOpenSuccess(true);
+      setTimeout(() => setIsOpenSuccess(false), 1500);
+      refreshPage();
+    }
+  }, [isSubmitSuccessful]);
 
   return (
     <Transition appear show={isOpenEdit} as={Fragment}>

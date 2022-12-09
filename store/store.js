@@ -12,3 +12,5 @@ export const editModalRealAtom = atom(false);
 export const editIdModalRealAtom = atom("");
 export const deleteModalRealAtom = atom(false);
 export const deleteIdModalRealAtom = atom("");
+
+export const successModelAtom = atom(false);

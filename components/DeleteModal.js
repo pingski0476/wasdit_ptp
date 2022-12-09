@@ -2,11 +2,23 @@ import { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { client } from "./Fetch";
 import { useAtom } from "jotai";
-import { deleteModalAtom, modalDeleteAtom } from "../store/store";
+import {
+  deleteModalAtom,
+  modalDeleteAtom,
+  successModelAtom,
+} from "../store/store";
 
 export default function DeleteModal({ userData }) {
   //initializing modal state to trigger modal
   const [isOpenDelete, setIsOpenDelete] = useAtom(modalDeleteAtom);
+
+  //initialize success modal
+  const [, setIsOpenSuccess] = useAtom(successModelAtom);
+
+  //refresh page function when data is sent
+  const refreshPage = () => {
+    window.location.reload();
+  };
 
   //getting id that wants to be deleted
   const [deleteId] = useAtom(deleteModalAtom);
@@ -16,12 +28,14 @@ export default function DeleteModal({ userData }) {
     try {
       await client.records.delete(`kegiatan_${userData.kelompok}`, deleteId);
       setIsOpenDelete(false);
+      setIsOpenSuccess(true);
+      setTimeout(() => setIsOpenSuccess(false), 1500);
+      refreshPage();
     } catch (error) {
       console.log(error.message);
     }
   };
 
-  console.log(deleteId);
   return (
     <Transition appear show={isOpenDelete} as={Fragment}>
       <Dialog

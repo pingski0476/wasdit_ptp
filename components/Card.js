@@ -1,4 +1,4 @@
-const Card = ({ title, total }) => {
+const Card = ({ title, total, totalRupiah }) => {
   return (
     <div className="flex items-center p-4 bg-emerald-500 rounded-lg shadow-sm">
       <div className="p-3 mr-4 text-green-500 bg-white rounded-full ">
@@ -11,8 +11,11 @@ const Card = ({ title, total }) => {
         </svg>
       </div>
       <div>
-        <p className="mb-2 text-lg font-medium text-white">{title}</p>
-        <p className="text-lg font-semibold text-white">{total}</p>
+        <p className="mb-2 text-xl font-medium text-white">{title}</p>
+
+        <p className="text-lg font-semibold text-white">
+          {totalRupiah}&nbsp;{total ? <p>({total})</p> : <></>}
+        </p>
       </div>
     </div>
   );

@@ -1,12 +1,12 @@
 import Head from "next/head";
-import { client } from "../../components/Fetch";
+import { client, getUserState } from "../../components/Fetch";
 import TabelAnggaran from "../../components/TabelAnggaran";
 import Card from "../../components/Card";
 import Admin from "../../layout/Admin";
-import { getUserState } from "../../components/Fetch";
 import { dehydrate, useQuery, QueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import LoadingScreen from "../../components/LoadingScreen";
 
 export async function getServerSideProps() {
   const queryclient = new QueryClient();
@@ -76,7 +76,7 @@ export default function Koordinator() {
   });
 
   if (status_kegiatan === "loading") {
-    return <div>Loading . . . .</div>;
+    return <LoadingScreen />;
   }
 
   if (status_kegiatan === "error") {
@@ -85,12 +85,12 @@ export default function Koordinator() {
 
   //inputting pagu anggaran into a new array
   const anggaran = kegiatan.map((item) => {
-    return item.pagu_anggaran;
+    return item?.pagu_anggaran;
   });
 
   //inputing realisasi into a new array
   const totalRealisasi = realisasi?.map((real) => {
-    return real.realisasi;
+    return real?.realisasi;
   });
 
   //calculating total anggaran kegiatan
@@ -126,6 +126,11 @@ export default function Koordinator() {
       <div>
         <Head>
           <title>Dashboard Wasdit PTP</title>
+          <link
+            rel="icon"
+            type="image/x-icon"
+            href='../../public/favicon.ico'
+          />
         </Head>
 
         <main className="container w-full flex flex-col justify-center items-center overflow-x-auto">

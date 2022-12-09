@@ -2,7 +2,11 @@ import { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { client } from "./Fetch";
 import { useAtom } from "jotai";
-import { deleteModalRealAtom, deleteIdModalRealAtom } from "../store/store";
+import {
+  deleteModalRealAtom,
+  deleteIdModalRealAtom,
+  successModelAtom,
+} from "../store/store";
 
 export default function DeleteModalReal({ userData }) {
   //initializing modal state to trigger modal
@@ -11,6 +15,10 @@ export default function DeleteModalReal({ userData }) {
   //getting id that wants to be deleted
   const [deleteIdReal] = useAtom(deleteIdModalRealAtom);
 
+  //initialize success modal
+  const [, setIsOpenSuccess] = useAtom(successModelAtom);
+
+  //function to reload the page when the data is sent
   const refreshPage = () => {
     window.location.reload();
   };
@@ -23,6 +31,8 @@ export default function DeleteModalReal({ userData }) {
         deleteIdReal
       );
       setIsOpenRealDelete(false);
+      setIsOpenSuccess(true);
+      setTimeout(() => setIsOpenSuccess(false), 1500);
       refreshPage();
     } catch (error) {
       console.log(error.message);

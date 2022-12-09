@@ -6,6 +6,7 @@ import { getUserState, client } from "../../components/Fetch";
 import { useQuery, dehydrate, QueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import LoadingScreen from "../../components/LoadingScreen";
 
 export async function getServerSideProps() {
   const queryclient = new QueryClient();
@@ -82,7 +83,7 @@ export default function Dashboard() {
   );
 
   if (status_kegiatan === "loading") {
-    return <div>Loading . . . .</div>;
+    return <LoadingScreen />;
   }
 
   if (status_kegiatan === "error") {
@@ -144,6 +145,11 @@ export default function Dashboard() {
       <div>
         <Head>
           <title>Dashboard Wasdit PTP</title>
+          <link
+            rel="icon"
+            type="image/x-icon"
+            href='../../public/favicon.ico'
+          />
         </Head>
 
         <main className="container w-full flex flex-col justify-center items-center overflow-x-auto">

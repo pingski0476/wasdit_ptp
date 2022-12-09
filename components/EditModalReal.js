@@ -1,7 +1,11 @@
 import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useAtom } from "jotai";
-import { editModalRealAtom, editIdModalRealAtom } from "../store/store";
+import {
+  editModalRealAtom,
+  editIdModalRealAtom,
+  successModelAtom,
+} from "../store/store";
 import { useForm } from "react-hook-form";
 import { client } from "./Fetch";
 
@@ -9,10 +13,13 @@ export default function EditModalReal({ userData, kegiatan, sisaAnggaran }) {
   //setting modal state to instantiate the modal
   const [isOpenEditReal, setIsOpenEditReal] = useAtom(editModalRealAtom);
 
+  //initialize success modal
+  const [, setIsOpenSuccess] = useAtom(successModelAtom);
+
   //setting modal id that is clicked
   const [editIdReal] = useAtom(editIdModalRealAtom);
 
-  const kelompok = userData.kelompok;
+  const kelompok = userData?.kelompok;
 
   //form hook initialization
   const {
@@ -21,6 +28,11 @@ export default function EditModalReal({ userData, kegiatan, sisaAnggaran }) {
     reset,
     formState: { isSubmitSuccessful },
   } = useForm();
+
+  //function to reload the page when the data is sent
+  const refreshPage = () => {
+    window.location.reload();
+  };
 
   const getSatuRealisasi = async () => {
     try {
@@ -51,6 +63,9 @@ export default function EditModalReal({ userData, kegiatan, sisaAnggaran }) {
   useEffect(() => {
     if (isSubmitSuccessful) {
       setIsOpenEditReal(false);
+      setIsOpenSuccess(true);
+      setTimeout(() => setIsOpenSuccess(false), 1500);
+      refreshPage();
     }
   });
 
@@ -89,7 +104,7 @@ export default function EditModalReal({ userData, kegiatan, sisaAnggaran }) {
                   as="h3"
                   className="text-xl font-bold text-center leading-6 text-gray-900"
                 >
-                  <h1>Input Kegiatan</h1>
+                  <h1>Edit Realisasi</h1>
                 </Dialog.Title>
                 <form
                   method="post"

@@ -1,15 +1,17 @@
 import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useAtom } from "jotai";
-import { modalAddAtom } from "../store/store";
+import { modalAddAtom, successModelAtom } from "../store/store";
 import { useForm } from "react-hook-form";
 import { client } from "./Fetch";
+import SuccessModal from "./SuccessModal";
 
 export default function AddModal({ userData }) {
   //initialize form state, if this change to true then the form is reset
   const [safeToReset, setSafeToReset] = useState(false);
 
-  const [isShowing, setIsShowing] = useState(false);
+  //initialize success modal
+  const [, setIsOpenSuccess] = useAtom(successModelAtom);
 
   //setting modal state
   const [isOpenAdd, setIsOpenAdd] = useAtom(modalAddAtom);
@@ -21,6 +23,11 @@ export default function AddModal({ userData }) {
     reset,
     formState: { isSubmitSuccessful },
   } = useForm();
+
+  //refresh page function when data is sent
+  const refreshPage = () => {
+    window.location.reload();
+  };
 
   //reading user kelompok for database connection
   const kelompok = userData?.kelompok;
@@ -44,9 +51,12 @@ export default function AddModal({ userData }) {
 
   useEffect(() => {
     if (isSubmitSuccessful) {
-      setIsShowing(true);
+      setIsOpenAdd(false);
+      setIsOpenSuccess(true);
+      setTimeout(() => setIsOpenSuccess(false));
+      refreshPage();
     }
-  });
+  }, [isSubmitSuccessful]);
 
   return (
     <Transition appear show={isOpenAdd} as={Fragment}>
@@ -83,7 +93,6 @@ export default function AddModal({ userData }) {
                   as="h3"
                   className="text-xl font-bold text-center leading-6 text-gray-900"
                 >
-                  <Transition show={isShowing}>Success</Transition>
                   <h1>Tambah Kegiatan</h1>
                 </Dialog.Title>
                 <form
